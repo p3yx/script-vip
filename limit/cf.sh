@@ -2,10 +2,10 @@
 MYIP=$(wget -qO- icanhazip.com);
 apt install jq curl -y
 read -p "Masukan Domain (contoh : peyx)" domen
-DOMAIN=zntun.my.id
+DOMAIN=pxtun.biz.id
 sub=${domen}
 #(</dev/urandom tr -dc a-z0-9 | head -c5)
-dns=${sub}.zntun.my.id
+dns=${sub}.pxtun.biz.id
 CF_ID=fa4573620@gmail.com
 CF_KEY=8fe143822aaee5b7c477fa33a222f215b69ac
 set -euo pipefail
