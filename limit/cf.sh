@@ -1,23 +1,22 @@
 #!/bin/bash
-#random
+MYIP=$(wget -qO- icanhazip.com);
 apt install jq curl -y
-rm -rf /root/xray/scdomain
-mkdir -p /root/xray
-clear
-sub=$(</dev/urandom tr -dc a-z0-9 | head -c5)
+read -p "Masukan Domain (contoh : peyx)" domen
 DOMAIN=zntun.my.id
-SUB_DOMAIN=asx-${sub}.zntun.my.id
+sub=${domen}
+#(</dev/urandom tr -dc a-z0-9 | head -c5)
+dns=${sub}.zntun.my.id
 CF_ID=fa4573620@gmail.com
 CF_KEY=8fe143822aaee5b7c477fa33a222f215b69ac
 set -euo pipefail
-IP=$(wget -qO- ipinfo.io/ip);
-echo "Record DNS ${SUB_DOMAIN}..."
+IP=$(wget -qO- icanhazip.com);
+echo "Updating DNS for ${dns}..."
 ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
      -H "X-Auth-Email: ${CF_ID}" \
      -H "X-Auth-Key: ${CF_KEY}" \
      -H "Content-Type: application/json" | jq -r .result[0].id)
 
-RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${SUB_DOMAIN}" \
+RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${dns}" \
      -H "X-Auth-Email: ${CF_ID}" \
      -H "X-Auth-Key: ${CF_KEY}" \
      -H "Content-Type: application/json" | jq -r .result[0].id)
@@ -27,22 +26,18 @@ if [[ "${#RECORD}" -le 10 ]]; then
      -H "X-Auth-Email: ${CF_ID}" \
      -H "X-Auth-Key: ${CF_KEY}" \
      -H "Content-Type: application/json" \
-     --data '{"type":"A","name":"'${SUB_DOMAIN}'","content":"'${IP}'","ttl":120,"proxied":false}' | jq -r .result.id)
+     --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":false}' | jq -r .result.id)
 fi
 
 RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
      -H "X-Auth-Email: ${CF_ID}" \
      -H "X-Auth-Key: ${CF_KEY}" \
      -H "Content-Type: application/json" \
-     --data '{"type":"A","name":"'${SUB_DOMAIN}'","content":"'${IP}'","ttl":120,"proxied":false}')
-echo "Host : $SUB_DOMAIN"
-echo "IP=$SUB_DOMAIN" > /var/lib/ipvps.conf
-echo "$SUB_DOMAIN" > /root/domain
-echo "$SUB_DOMAIN" > /etc/xray/domain
-echo "$SUB_DOMAIN" > /etc/v2ray/domain
-echo "$SUB_DOMAIN" > /root/scdomain
-echo "$SUB_DOMAIN" > /root/xray/scdomain
-echo -e "Done Record Domain= ${SUB_DOMAIN} For VPS"
-rm -rf cf
-sleep 1
-
+     --data '{"type":"A","name":"'${dns}'","content":"'${IP}'","ttl":120,"proxied":false}')
+echo "$dns" > /root/domain
+echo "$dns" > /root/scdomain
+echo "$dns" > /etc/xray/domain
+echo "$dns" > /etc/v2ray/domain
+echo "$dns" > /etc/xray/scdomain
+echo "IP=$dns" > /var/lib/kyt/ipvps.conf
+cd
