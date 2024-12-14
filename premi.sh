@@ -230,28 +230,26 @@ clear
 function pasang_domain() {
 echo -e ""
 clear
-echo -e "   .----------------------------------."
-echo -e "   |\e[1;32mPlease Select a Domain Type Below \e[0m|"
-echo -e "   '----------------------------------'"
-echo -e "     \e[1;32m1)\e[0m Domain Sendiri"
-echo -e "     \e[1;32m2)\e[0m Gunakan Domain Default Server "
-echo -e "   ------------------------------------"
-read -p "   Please select numbers 1-2 or Any Button(Random) : " host
-echo ""
-if [[ $host == "1" ]]; then
-echo -e "   \e[1;32mPlease Enter Your Subdomain $NC"
-read -p "   Subdomain: " host1
-echo "IP=" >> /var/lib/kyt/ipvps.conf
-echo $host1 > /etc/xray/domain
-echo $host1 > /root/domain
-echo ""
-elif [[ $host == "2" ]]; then
+echo -e "$BBlue                     SETUP DOMAIN VPS     $NC"
+echo -e "$BYellow----------------------------------------------------------$NC"
+echo -e "$BGreen 1. Use Domain Random / Gunakan Domain Random $NC"
+echo -e "$BGreen 2. Choose Your Own Domain / Gunakan Domain Sendiri $NC"
+echo -e "$BYellow----------------------------------------------------------$NC"
+read -rp " input 1 or 2 / pilih 1 atau 2 : " dns
+if test $dns -eq 1; then
 wget ${REPO}limit/cf.sh && chmod +x cf.sh && ./cf.sh
 rm -f /root/cf.sh
-clear
-else
-print_install "Random Subdomain/Domain is Used"
-clear
+elif test $dns -eq 2; then
+read -rp "Enter Your Domain / masukan domain : " dom
+echo "IP=$dom" > /var/lib/ipvps.conf
+echo "$dom" > /root/scdomain
+echo "$dom" > /etc/xray/scdomain
+echo "$dom" > /etc/xray/domain
+echo "$dom" > /etc/v2ray/domain
+echo "$dom" > /root/domain
+else 
+echo "Not Found Argument"
+exit 1
 fi
 }
 clear
